@@ -1,0 +1,66 @@
+input: mutiple files with multiple hostnames
+void *threadID
+
+need: 
+create a thread pool with X threads (23 is max in file being passed in)
+grab hostname from file, put on queue
+have threads grab from queue and do translation
+
+threads:
+wait for something to be queued
+pthread_mutex_lock
+queue_pop (queue.h)
+pthread_multex_unlock
+readfile(filename)
+	openfile
+		while there are hostnames to read
+			while queue full
+				wait ifqueue full
+				lock
+				queue_push
+				unlock
+
+output:
+
+
+BEGINNING OF PSEUDOCODE (I THINK THATS HOW IT'S SPELLED)
+
+queue size? 50
+number of threads? 2 & 2
+somehow get fed a new input file when done with first input file
+
+Main
+	CHECK					detect number of cores
+	CHECK					create queue init mutex
+	CHECK					populate requester threads
+	CHECK					populate resolver threads
+	CHECK					wait for all threads the finish
+	?????		destroy mutex
+	CHECK					free queue
+
+Requester Thread
+	CHECK					open input file path void queue
+	Verify file
+	read hostname
+	lock queue
+	push hostname onto queue
+	unlock queue
+	if queue full
+		sleep and try again
+	close input file
+	
+
+Resolver Thread
+	verify file
+	open file path void queue
+	open output
+	lock queue
+	pop off queue
+	unlock queue
+	DNS lookup
+		if error, output stderr and continue
+		else continue
+	lock output file
+	print hostname, ip
+	unlock output file
+
